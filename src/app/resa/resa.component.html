@@ -1,0 +1,110 @@
+<main class="container">
+  <div class="alert alert-success" *ngIf="success">Opération effectuée avec succès</div>
+
+
+  <div class="h2">Liste des Réservations</div>
+  <button data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-primary float-end" (click)="resetForm()">Nouvelle
+    réservation</button>
+
+  <br><br>
+  <div class="row">
+    <div class="col-9">
+      <div class="input-group mb-3 clearfix">
+        <span class="input-group-text" id="basic-addon1"><i class="fa fa-search" aria-hidden="true"></i></span>
+        <input type="text" class="form-control" placeholder="Rechercher une réservation par nom de client" aria-describedby="basic-addon1" [(ngModel)]="clientArechercher">
+      </div>
+    </div>
+    <div class="col-3">
+      <button type="button" class="btn btn-primary" (click)="loadResa()">Rechercher</button>
+    </div>
+  </div>
+
+  <table class="table table-striped table-hover">
+    <thead>
+    <tr>
+      <th>id</th>
+      <th>Client</th>
+      <th>Hotel</th>
+      <th>date de début</th>
+      <th>date de fin</th>
+      <th>numéro de chambre</th>
+      <th><i class="fa fa-cogs"></i></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let resa of reservations">
+      <td>{{ resa.id }}</td>
+      <td>{{ resa.client?.nom }}</td>
+      <td>{{ resa.hotel?.nom }}</td>
+      <td>{{ resa.datedeb }}</td>
+      <td>{{ resa.datefin }}</td>
+      <td>{{ resa.numChambre }}</td>
+
+
+      <td>
+        <a (click)="edit(resa.id)" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i class="fa fa-edit"></i></a>
+        <a (click)="delete(resa.id)"class="ps-2" ><i class="fa fa-trash"></i></a>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+  <br />
+</main>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form name="villeForm" method="POST" (submit)="submitForm()" >
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel" *ngIf="r.id == undefined">Ajouter une réservation</h5>
+          <h5 class="modal-title" id="exampleModalLabel" *ngIf="r.id != undefined">Editer une réservation</h5>
+          <button type="button" #closebutton class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-danger" *ngIf="error">{{errormessage}}</div>
+
+          <div class="mb-3">
+            <label for="client" class="form-label">CLient</label>
+            <select name="client" id="client" required class="form-select" [(ngModel)]="r.client" [compareWith]="checkClient">
+              <option value="">Sélectionner un client</option>
+              <option *ngFor="let client of clients" [ngValue]="client">
+                {{client.nom}}
+              </option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="hotel" class="form-label">Hotel</label>
+            <select name="hotel" id="hotel" required class="form-select" [(ngModel)]="r.hotel" [compareWith]="checkHotel">
+              <option value="">Sélectionner un hotel</option>
+              <option *ngFor="let hotel of hotels" [ngValue]="hotel">
+                {{hotel.nom}}
+              </option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="dateDebut" class="form-label">date début</label>
+            <input type="date" name="dateDebut" class="form-control" id="dateDebut" placeholder="date début" required [(ngModel)]="r.datedeb">
+          </div>
+
+          <div class="mb-3">
+            <label for="dateFin" class="form-label">date fin</label>
+            <input type="date" class="form-control" id="dateFin" name="dateFin" placeholder="date fin" required [(ngModel)]="r.datefin">
+          </div>
+          <div class="mb-3">
+            <label for="numChambre" class="form-label">numéro de chambre</label>
+            <input type="number" class="form-control" id="numChambre" name="numChambre" placeholder="numéro de chambre" required [(ngModel)]="r.numChambre">
+          </div>
+
+
+        <div class="modal-footer justify-content-between">
+          <button type="reset" class="btn btn-danger float-end">Annuler</button>
+          <button type="submit" class="btn btn-secondary" id="submitbtn">Valider</button>
+        </div>
+      </div>
+      </div>
+    </form>
+  </div>
+</div>
